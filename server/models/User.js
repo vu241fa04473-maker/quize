@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true, // We will use emailOrRoll as uniqueness check
   },
+  password: {
+    type: String,
+    required: true,
+  },
   loginTime: {
     type: Date,
     default: Date.now,

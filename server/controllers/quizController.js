@@ -43,7 +43,8 @@ export const submitQuiz = async (req, res) => {
     const submission = await Submission.create({
       userId,
       answers,
-      score
+      score,
+      total: totalQuestions
     });
 
     res.status(200).json({ message: 'Quiz submitted successfully', score, total: totalQuestions });

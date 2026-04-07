@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Clock, AlertTriangle, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import API_BASE_URL from '../config';
 
 export default function QuizPage() {
   const [questions, setQuestions] = useState([]);
@@ -19,7 +20,7 @@ export default function QuizPage() {
     const fetchQuestions = async () => {
       try {
         const token = localStorage.getItem('studentToken');
-        const res = await axios.get('http://localhost:5000/api/quiz/questions', {
+        const res = await axios.get(`${API_BASE_URL}/quiz/questions`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setQuestions(res.data);
@@ -70,7 +71,7 @@ export default function QuizPage() {
         selectedOption
       }));
 
-      const res = await axios.post('http://localhost:5000/api/quiz/submit', 
+      const res = await axios.post(`${API_BASE_URL}/quiz/submit`, 
         { answers: formattedAnswers },
         { headers: { Authorization: `Bearer ${token}` } }
       );

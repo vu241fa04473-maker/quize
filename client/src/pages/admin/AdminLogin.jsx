@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Shield } from 'lucide-react';
+import API_BASE_URL from '../../config';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -21,7 +22,7 @@ export default function AdminLogin() {
     setError('');
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/admin/login', { username, password });
+      const res = await axios.post(`${API_BASE_URL}/auth/admin/login`, { username, password });
       localStorage.setItem('adminToken', res.data.token);
       navigate('/admin/dashboard');
     } catch (err) {

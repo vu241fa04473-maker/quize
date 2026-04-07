@@ -1,8 +1,8 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { studentLogin, adminLogin } from '../controllers/authController.js';
+import { studentLogin, studentRegister, adminLogin } from '../controllers/authController.js';
 import { getQuestions, submitQuiz, submitBrowserQuiz } from '../controllers/quizController.js';
-import { addQuestion, getAdminQuestions, updateQuestion, deleteQuestion } from '../controllers/adminController.js';
+import { addQuestion, getAdminQuestions, getStudentSubmissions, updateQuestion, deleteQuestion } from '../controllers/adminController.js';
 
 const router = express.Router();
 
@@ -30,6 +30,7 @@ const verifyAdmin = (req, res, next) => {
 };
 
 // Auth Routes
+router.post('/auth/student/register', studentRegister);
 router.post('/auth/student/login', studentLogin);
 router.post('/auth/admin/login', adminLogin);
 
@@ -42,6 +43,7 @@ router.post('/quiz/submit-browser', submitBrowserQuiz);
 
 // Admin Quiz Routes
 router.get('/admin/questions', verifyAdmin, getAdminQuestions);
+router.get('/admin/submissions', verifyAdmin, getStudentSubmissions);
 router.post('/admin/questions', verifyAdmin, addQuestion);
 router.put('/admin/questions/:id', verifyAdmin, updateQuestion);
 router.delete('/admin/questions/:id', verifyAdmin, deleteQuestion);

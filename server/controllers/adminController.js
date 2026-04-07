@@ -1,4 +1,5 @@
 import Question from '../models/Question.js';
+import Submission from '../models/Submission.js';
 
 export const addQuestion = async (req, res) => {
   try {
@@ -26,6 +27,15 @@ export const getAdminQuestions = async (req, res) => {
     res.status(200).json(questions);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch questions' });
+  }
+};
+
+export const getStudentSubmissions = async (req, res) => {
+  try {
+    const submissions = await Submission.find().populate('userId', 'name emailOrRoll').sort({ submissionTime: -1 });
+    res.status(200).json(submissions);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch submissions' });
   }
 };
 
