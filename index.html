@@ -407,8 +407,8 @@
       const [err, setErr] = useState('');
       const handleLogin = (e) => {
         e.preventDefault();
-        if(user === 'admin' && pass === 'admin123') navigate('admin-dashboard');
-        else setErr('Invalid credentials (try admin / admin123)');
+        if(user === 'venky' && pass === 'venky@223') navigate('admin-dashboard');
+        else setErr('Invalid credentials (try venky / venky@223)');
       }
       return (
         <div className="min-h-screen flex items-center justify-center p-4">
