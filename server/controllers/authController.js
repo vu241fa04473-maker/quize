@@ -35,7 +35,7 @@ export const studentRegister = async (req, res) => {
       user: { id: user._id, name: user.name, emailOrRoll: user.emailOrRoll }
     });
   } catch (error) {
-    res.status(500).json({ error: 'Server error during registration' });
+    res.status(500).json({ error: 'Server error: ' + error.message });
   }
 };
 
