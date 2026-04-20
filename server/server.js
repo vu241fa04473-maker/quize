@@ -33,7 +33,7 @@ app.use('/api', apiLimiter, apiRoutes);
 const connectDB = async () => {
   try {
     const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/online-quiz';
-    await mongoose.connect(mongoURI);
+    await mongoose.connect(mongoURI, { family: 4 });
     console.log(`MongoDB Connected: ${mongoURI}`);
     
     app.listen(PORT, () => {
