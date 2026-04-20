@@ -32,7 +32,8 @@ app.use('/api', apiLimiter, apiRoutes);
 // Database connection
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/online-quiz';
+    let mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/online-quiz';
+    mongoURI = mongoURI.replace(/"/g, ''); // Safely strip any stray double quotes that users might paste
     await mongoose.connect(mongoURI, { family: 4 });
     console.log(`MongoDB Connected: ${mongoURI}`);
     
