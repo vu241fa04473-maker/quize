@@ -4,6 +4,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import apiRoutes from './routes/api.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -29,6 +34,11 @@ const apiLimiter = rateLimit({
 // Apply rate limiter to all API routes
 app.use('/api', apiLimiter, apiRoutes);
 
+// Serve the main index.html file
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
 // Database connection
 const connectDB = async () => {
   try {
@@ -38,7 +48,11 @@ const connectDB = async () => {
     console.log(`MongoDB Connected: ${mongoURI}`);
     
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`Server running successfully!`);
+      console.log(`\n========================================`);
+      console.log(`🚀 Click the link to open your project:`);
+      console.log(`👉 http://localhost:${PORT}`);
+      console.log(`========================================\n`);
     });
   } catch (err) {
     console.error('Failed to connect to MongoDB', err);
