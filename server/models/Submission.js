@@ -4,11 +4,19 @@ const submissionSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false, // Made optional for browser-based submissions
+  },
+  name: {
+    type: String,
+    required: false,
+  },
+  rollNumber: {
+    type: String,
+    required: false,
   },
   answers: {
     type: Array,
-    required: true,
+    required: false, // Detailed answers containing questionId, selectedOption, correctOption, isCorrect
   },
   score: {
     type: Number,

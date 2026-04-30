@@ -1,9 +1,11 @@
 import Question from '../models/Question.js';
 import Submission from '../models/Submission.js';
+import csv from 'csv-parser';
+import { Readable } from 'stream';
 
 export const addQuestion = async (req, res) => {
   try {
-    const { text, options, correctAnswer } = req.body;
+    const { text, options, correctAnswer, topic, difficulty, tags, explanation } = req.body;
     
     if (!text || !options || options.length !== 4 || !correctAnswer) {
       return res.status(400).json({ error: 'Invalid question data. Require text, 4 options, and correctAnswer.' });
@@ -13,7 +15,9 @@ export const addQuestion = async (req, res) => {
       return res.status(400).json({ error: 'correctAnswer must be one of the options.' });
     }
 
-    const question = await Question.create({ text, options, correctAnswer });
+    const question = await Question.create({ 
+      text, options, correctAnswer, topic, difficulty, tags, explanation 
+    });
     res.status(201).json({ message: 'Question added successfully', question });
   } catch (error) {
     res.status(500).json({ error: 'Failed to add question' });
@@ -42,11 +46,11 @@ export const getStudentSubmissions = async (req, res) => {
 export const updateQuestion = async (req, res) => {
   try {
     const { id } = req.params;
-    const { text, options, correctAnswer } = req.body;
+    const { text, options, correctAnswer, topic, difficulty, tags, explanation } = req.body;
     
     const question = await Question.findByIdAndUpdate(
       id, 
-      { text, options, correctAnswer }, 
+      { text, options, correctAnswer, topic, difficulty, tags, explanation }, 
       { new: true, runValidators: true }
     );
     
@@ -69,5 +73,48 @@ export const deleteQuestion = async (req, res) => {
     res.status(200).json({ message: 'Question deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete question' });
+  }
+};
+
+export const bulkUploadQuestions = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Please upload a CSV file' });
+    }
+
+    const results = [];
+    const bufferStream = new Readable();
+    bufferStream.push(req.file.buffer);
+    bufferStream.push(null);
+
+    bufferStream
+      .pipe(csv())
+      .on('data', (data) => {
+        try {
+          const options = [data['Option A'], data['Option B'], data['Option C'], data['Option D']].filter(Boolean);
+          if (data.Text && options.length === 4 && data['Correct Answer']) {
+            results.push({
+              text: data.Text,
+              options,
+              correctAnswer: data['Correct Answer'],
+              topic: data.Topic || 'General',
+              difficulty: data.Difficulty || 'Medium',
+              tags: data.Tags ? data.Tags.split(',').map(t => t.trim()) : [],
+              explanation: data.Explanation || ''
+            });
+          }
+        } catch (e) {
+          // ignore malformed row
+        }
+      })
+      .on('end', async () => {
+        if (results.length === 0) {
+           return res.status(400).json({ error: 'No valid questions found in CSV.' });
+        }
+        await Question.insertMany(results);
+        res.status(201).json({ message: `${results.length} questions added successfully.` });
+      });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to process CSV file' });
   }
 };

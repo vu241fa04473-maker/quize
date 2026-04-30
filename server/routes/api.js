@@ -1,10 +1,12 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
 import { studentLogin, studentRegister, adminLogin } from '../controllers/authController.js';
-import { getQuestions, submitQuiz, submitBrowserQuiz } from '../controllers/quizController.js';
-import { addQuestion, getAdminQuestions, getStudentSubmissions, updateQuestion, deleteQuestion } from '../controllers/adminController.js';
+import { getQuestions, submitQuiz, submitBrowserQuiz, getLeaderboard } from '../controllers/quizController.js';
+import { addQuestion, getAdminQuestions, getStudentSubmissions, updateQuestion, deleteQuestion, bulkUploadQuestions } from '../controllers/adminController.js';
 
 const router = express.Router();
+const upload = multer();
 
 // Middleware to verify student token
 const verifyStudent = (req, res, next) => {
@@ -41,10 +43,17 @@ router.post('/quiz/submit', verifyStudent, submitQuiz);
 // New public route for Browser frontend
 router.post('/quiz/submit-browser', submitBrowserQuiz);
 
+// Public Routes for standalone browser app
+router.get('/public/questions', getAdminQuestions);
+router.post('/public/questions', addQuestion);
+router.delete('/public/questions/:id', deleteQuestion);
+router.get('/public/leaderboard', getLeaderboard);
+
 // Admin Quiz Routes
 router.get('/admin/questions', verifyAdmin, getAdminQuestions);
 router.get('/admin/submissions', verifyAdmin, getStudentSubmissions);
 router.post('/admin/questions', verifyAdmin, addQuestion);
+router.post('/admin/questions/bulk', verifyAdmin, upload.single('file'), bulkUploadQuestions);
 router.put('/admin/questions/:id', verifyAdmin, updateQuestion);
 router.delete('/admin/questions/:id', verifyAdmin, deleteQuestion);
 

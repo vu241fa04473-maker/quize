@@ -55,7 +55,7 @@ export const submitQuiz = async (req, res) => {
 
 export const submitBrowserQuiz = async (req, res) => {
   try {
-    const { name, roll, score, total } = req.body;
+    const { name, roll, score, total, answers } = req.body;
     
     if (!name || !roll) {
        return res.status(400).json({ error: 'Name and Roll Number required' });
@@ -65,11 +65,23 @@ export const submitBrowserQuiz = async (req, res) => {
       name,
       rollNumber: roll,
       score,
-      total
+      total,
+      answers: answers || []
     });
 
     res.status(200).json({ message: 'Saved to Backend successfully', submission });
   } catch (error) {
     res.status(500).json({ error: 'Server error saving submission' });
+  }
+};
+
+export const getLeaderboard = async (req, res) => {
+  try {
+    const submissions = await Submission.find()
+      .sort({ score: -1, date: 1 })
+      .limit(10);
+    res.status(200).json(submissions);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch leaderboard' });
   }
 };
