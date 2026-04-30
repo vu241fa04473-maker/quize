@@ -489,7 +489,7 @@
             </div>
             <div className="flex gap-3">
               <button onClick={() => {
-                const link = window.location.origin + window.location.pathname + '?examid=' + Math.random().toString(36).substr(2, 8).toUpperCase();
+                const link = 'https://quize-x5kg.vercel.app/?examid=' + Math.random().toString(36).substr(2, 8).toUpperCase();
                 prompt("Copy this invite link and send it to candidates:", link);
               }} className="hidden md:flex bg-indigo-600/20 border border-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl items-center gap-2 transition shadow-[0_0_15px_rgba(79,70,229,0.2)]">
                 <Icon name="link" size={18} /> Invite Link
