@@ -594,7 +594,14 @@
         fetch('https://online-quiz-api-2cxw.onrender.com/api/admin/submissions', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
-          .then(res => res.json())
+          .then(res => {
+            if (res.status === 401 || res.status === 403) {
+              localStorage.removeItem('quiz_admin_token');
+              navigate('admin-login');
+              throw new Error('Invalid token');
+            }
+            return res.json();
+          })
           .then(data => {
              // Map backend submission to frontend structure
              if (Array.isArray(data)) {
