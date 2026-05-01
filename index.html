@@ -148,7 +148,7 @@
         if (isLogin) {
           if (!roll || !password) return setError('Both fields are required');
           try {
-            const res = await fetch('https://quize-6.onrender.com/api/auth/student/login', {
+            const res = await fetch('http://localhost:5000/api/auth/student/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ emailOrRoll: roll, password })
@@ -167,7 +167,7 @@
         } else {
           if (!name || !roll || !password) return setError('All fields are required');
           try {
-            const res = await fetch('https://quize-6.onrender.com/api/auth/student/register', {
+            const res = await fetch('http://localhost:5000/api/auth/student/register', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ name, emailOrRoll: roll, password })
@@ -279,7 +279,7 @@
       useEffect(() => { answersRef.current = answers; }, [answers]);
 
       useEffect(() => {
-        fetch('https://quize-6.onrender.com/api/public/questions')
+        fetch('http://localhost:5000/api/public/questions')
           .then(res => res.json())
           .then(data => {
             const mapped = data.map(q => ({
@@ -316,7 +316,7 @@
         };
 
         try {
-          await fetch('https://quize-6.onrender.com/api/quiz/submit-browser', {
+          await fetch('http://localhost:5000/api/quiz/submit-browser', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(subData)
@@ -422,7 +422,7 @@
                 <Icon name="chevron-left" /> Previous
               </button>
 
-              {answeredCount === questions.length ? (
+              {current === questions.length - 1 ? (
                 <button onClick={handleSubmit} className="px-8 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-[0_0_15px_rgba(220,38,38,0.6)] font-extrabold transition">
                   Submit Quiz Answers
                 </button>
@@ -475,7 +475,7 @@
       const [loading, setLoading] = useState(true);
 
       useEffect(() => {
-        fetch('https://quize-6.onrender.com/api/public/leaderboard')
+        fetch('http://localhost:5000/api/public/leaderboard')
           .then(res => res.json())
           .then(data => { setLeaders(data); setLoading(false); })
           .catch(err => { console.error(err); setLoading(false); });
@@ -528,7 +528,7 @@
       const handleLogin = async (e) => {
         e.preventDefault();
         try {
-          const res = await fetch('https://quize-6.onrender.com/api/auth/admin/login', {
+          const res = await fetch('http://localhost:5000/api/auth/admin/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: user, password: pass })
@@ -578,7 +578,7 @@
       const [correct, setCorrect] = useState('');
 
       useEffect(() => {
-        fetch('https://quize-6.onrender.com/api/public/questions')
+        fetch('http://localhost:5000/api/public/questions')
           .then(res => res.json())
           .then(data => {
             const mapped = data.map(q => ({
@@ -591,7 +591,7 @@
           });
           
         const token = localStorage.getItem('quiz_admin_token');
-        fetch('https://quize-6.onrender.com/api/admin/submissions', {
+        fetch('http://localhost:5000/api/admin/submissions', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
           .then(res => res.json())
@@ -614,7 +614,7 @@
       const handleDelete = async (id) => {
         if (!window.confirm("Delete question?")) return;
         try {
-          await fetch('https://quize-6.onrender.com/api/public/questions/' + id, { method: 'DELETE' });
+          await fetch('http://localhost:5000/api/public/questions/' + id, { method: 'DELETE' });
           setQuestions(questions.filter(q => q.id !== id));
         } catch (e) {
           alert('Failed to delete question');
@@ -628,7 +628,7 @@
         if (!arr.includes(correct)) return alert("Correct answer must match one of the options");
 
         try {
-          const res = await fetch('https://quize-6.onrender.com/api/public/questions', {
+          const res = await fetch('http://localhost:5000/api/public/questions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text, options: arr, correctAnswer: correct })
