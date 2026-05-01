@@ -777,9 +777,9 @@
                           const pct = (s.score / s.total) * 100;
                           return (
                             <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition text-white">
-                              <td className="p-4 text-slate-300">{s.date}</td>
-                              <td className="p-4 font-bold">{s.name}</td>
-                              <td className="p-4 text-indigo-300 font-mono">{s.roll}</td>
+                              <td className="p-4 text-slate-300">{s.date || (s.submissionTime && new Date(s.submissionTime).toLocaleString())}</td>
+                              <td className="p-4 font-bold">{s.name || (s.userId && s.userId.name)}</td>
+                              <td className="p-4 text-indigo-300 font-mono">{s.roll || s.rollNumber || (s.userId && s.userId.emailOrRoll)}</td>
                               <td className="p-4 font-black text-xl">{s.score} <span className="text-slate-500 text-sm">/ {s.total}</span></td>
                               <td className="p-4">
                                 {pct >= 50 ? <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 uppercase tracking-widest">Passed</span>
